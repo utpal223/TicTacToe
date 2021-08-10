@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_main.*
 
 
@@ -37,17 +38,25 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
         reset.setOnClickListener {
             player=true
             turncount=0
+            distv.text="Player X Turn"
+            Toast.makeText(this, "NEW GAME STARTS", Toast.LENGTH_SHORT).show()
             initializeBoardStatus()
         }
     }
 
     private fun initializeBoardStatus() {
         for(i in 0..2){
-            for (i in 0..2)
+            for (j in 0..2)
             {
-                boardStatus[0][0]=-1
-                board[0][0].isEnabled=true
-                board[0][0].text=""
+                boardStatus[i][j]=-1
+            }
+        }
+
+        for (i:Array<Button> in board){
+            for (btn:Button in i)
+            {
+                btn.isEnabled=true
+                btn.text=""
             }
         }
     }
@@ -99,15 +108,87 @@ class MainActivity : AppCompatActivity(), View.OnClickListener  {
     }
 
     private fun checkWinner() {
-        //horizontal
+        //horizontal ckeck
         for (i in 0..2)
         {
-             
+            if (boardStatus[i][0]==boardStatus[i][1]&&boardStatus[i][0]==boardStatus[i][2])
+            {
+                if(boardStatus[i][0]==1)
+                {
+                    updateDislpay("Player X Winner")
+                    break
+                }
+                else if(boardStatus[i][0]==0)
+                {
+                    updateDislpay("Player O Winner")
+                    break
+                }
+            }
         }
+        //vertical check
+        for (i in 0..2)
+        {
+            if (boardStatus[0][i]==boardStatus[1][i]&&boardStatus[0][i]==boardStatus[2][i])
+            {
+                if(boardStatus[0][i]==1)
+                {
+                    updateDislpay("Player X Winner")
+                    break
+                }
+                else if(boardStatus[0][i]==0)
+                {
+                    updateDislpay("Player O Winner")
+                    break
+                }
+            }
+        }
+
+        //left diagonal
+        if (boardStatus[0][0]==boardStatus[1][1]&&boardStatus[0][0]==boardStatus[2][2])
+        {
+            if(boardStatus[0][0]==1)
+            {
+                updateDislpay("Player X Winner")
+            }
+            else if(boardStatus[0][0]==0)
+            {
+                updateDislpay("Player O Winner")
+            }
+        }
+        //right diagonal
+        if (boardStatus[0][2]==boardStatus[1][1]&&boardStatus[0][2]==boardStatus[2][0])
+        {
+            if(boardStatus[0][2]==1)
+            {
+                updateDislpay("Player X Winner")
+            }
+            else if(boardStatus[0][2]==0)
+            {
+                updateDislpay("Player O Winner")
+            }
+        }
+
+
+
     }
 
     private fun updateDislpay(s: String) {
         distv.text=s
+        if(s.contains("Winner"))
+        {
+            disBtn()
+        }
+
+    }
+    private fun disBtn()
+    {
+        for (i:Array<Button> in board)
+        {
+            for(b:Button in i)
+            {
+                b.isEnabled=false
+            }
+        }
     }
 
     private fun updateValue(row: Int, col: Int, play: Boolean) {
